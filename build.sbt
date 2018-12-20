@@ -1,29 +1,27 @@
-name := """sbt-javacpp"""
-
-version := "1.14-SNAPSHOT"
-
-organization := "org.bytedeco"
+lazy val root = (project in file("."))
+  .enablePlugins(SbtPlugin)
+  .settings(
+    name := "sbt-javacpp",
+    version := "1.15-SNAPSHOT",
+    organization := "org.bytedeco",
+    scalaVersion := "2.12.7",
+    sbtVersion in Global := "1.2.7",
+    scriptedLaunchOpts := {
+      scriptedLaunchOpts.value ++
+        Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
+    },
+    scriptedBufferLog := false
+  )
 
 sbtPlugin := true
 
 publishMavenStyle := true
 
-scalaVersion := "2.12.4"
-
-sbtVersion in Global := "1.0.4"
-
-crossSbtVersions := Vector("0.13.17", "1.0.4")
-
-scalaCompilerBridgeSource := {
-  val sv = appConfiguration.value.provider.id.version
-  ("org.scala-sbt" % "compiler-interface" % sv % "component").sources
-}
-
 publishArtifact in Test := false
 
 pomIncludeRepository := { _ => false }
 
-libraryDependencies += "org.bytedeco" % "javacpp" % "1.4"
+libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.8.1"
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-Xlint", "-Xlog-free-terms")
 
@@ -35,7 +33,7 @@ publishTo := {
     Some("releases" at nexus + "service/local/staging/deploy/maven2")
 }
 
-pomExtra := (
+pomExtra :=
   <url>https://github.com/bytedeco/sbt-javacpp</url>
     <licenses>
       <license>
@@ -54,5 +52,8 @@ pomExtra := (
         <name>Lloyd Chan</name>
         <url>https://beachape.com</url>
       </developer>
+      <developer>
+        <id>vimalaguti</id>
+        <name>Vittorio Malaguti</name>
+      </developer>
     </developers>
-  )

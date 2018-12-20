@@ -16,8 +16,7 @@ object Plugin extends AutoPlugin {
       libraryDependencies += {
         "org.bytedeco" % "javacpp" % javaCppVersion.value jar
       },
-      javaCppPresetDependencies
-    )
+      javaCppPresetDependencies)
   }
 
   object Versions {
@@ -37,25 +36,15 @@ object Plugin extends AutoPlugin {
   private def javaCppPresetDependencies: Def.Setting[Seq[ModuleID]] = {
     import autoImport._
     libraryDependencies ++= {
-      val majorMinorJavaCppVersion = majorMinorOnly(javaCppVersion.value)
       javaCppPresetLibs.value.flatMap {
-        case (libName, libVersion) => {
-          val generic = "org.bytedeco.javacpp-presets" % libName % s"$libVersion-$majorMinorJavaCppVersion" classifier ""
+        case (libName, libVersion) =>
+          val generic = "org.bytedeco.javacpp-presets" % libName % s"$libVersion-${javaCppVersion.value}" classifier ""
           val platformSpecific = javaCppPlatform.value.map { platform =>
-            "org.bytedeco.javacpp-presets" % libName % s"$libVersion-$majorMinorJavaCppVersion" classifier platform
+            "org.bytedeco.javacpp-presets" % libName % s"$libVersion-${javaCppVersion.value}" classifier platform
           }
           generic +: platformSpecific
-        }
       }
     }
-  }
-
-  /**
-   * Given a version string, simply drops the patch level and returns the major-minor version only
-   * @param version
-   */
-  private def majorMinorOnly(version: String): String = {
-    version.split('.').take(2).mkString(".")
   }
 
 }

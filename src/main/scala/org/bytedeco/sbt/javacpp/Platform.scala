@@ -1,6 +1,6 @@
 package org.bytedeco.sbt.javacpp
 
-import org.bytedeco.javacpp.Loader
+import java.util.Locale
 
 /**
  * Created by Lloyd on 2/22/16.
@@ -20,7 +20,14 @@ object Platform {
    */
   val current: Seq[String] = sys.props.get(platformOverridePropertyKey) match {
     case Some(platform) if platform.trim().nonEmpty => platform.split(' ')
-    case _ => Seq(Loader.getPlatform)
+    case _ => Seq(
+      s"${org.apache.commons.lang3.SystemUtils.OS_NAME.toLowerCase(Locale.US)}-" +
+        s"${
+          org.apache.commons.lang3.SystemUtils.OS_ARCH.toLowerCase(Locale.US) match {
+            case "amd64" => "x86_64"
+            case fine => fine
+          }
+        }")
   }
 
 }
