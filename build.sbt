@@ -2,10 +2,8 @@ lazy val root = (project in file("."))
   .enablePlugins(SbtPlugin)
   .settings(
     name := "sbt-javacpp",
-    version := "1.15-SNAPSHOT",
+    version := "1.14-SNAPSHOT",
     organization := "org.bytedeco",
-    scalaVersion := "2.12.7",
-    sbtVersion in Global := "1.2.7",
     scriptedLaunchOpts := {
       scriptedLaunchOpts.value ++
         Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
@@ -13,7 +11,12 @@ lazy val root = (project in file("."))
     scriptedBufferLog := false
   )
 
+scalaVersion in Global := "2.12.7"
+sbtVersion in Global := "1.2.7"
+
 sbtPlugin := true
+
+crossSbtVersions := Vector("0.13.17", "1.2.7")
 
 publishMavenStyle := true
 
@@ -21,7 +24,7 @@ publishArtifact in Test := false
 
 pomIncludeRepository := { _ => false }
 
-libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.8.1"
+libraryDependencies += "org.bytedeco" % "javacpp" % "1.4.3"
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-Xlint", "-Xlog-free-terms")
 

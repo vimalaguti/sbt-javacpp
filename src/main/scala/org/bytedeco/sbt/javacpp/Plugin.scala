@@ -16,11 +16,12 @@ object Plugin extends AutoPlugin {
       libraryDependencies += {
         "org.bytedeco" % "javacpp" % javaCppVersion.value jar
       },
-      javaCppPresetDependencies)
+      javaCppPresetDependencies
+    )
   }
 
   object Versions {
-    val javaCppVersion = "1.4"
+    val javaCppVersion = "1.4.3"
   }
 
   object autoImport {
