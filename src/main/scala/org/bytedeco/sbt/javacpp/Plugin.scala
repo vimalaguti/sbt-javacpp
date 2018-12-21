@@ -4,6 +4,8 @@ import scala.language.postfixOps
 import sbt._
 import sbt.Keys._
 
+import scala.util.Try
+
 object Plugin extends AutoPlugin {
 
   override def projectSettings: Seq[Setting[_]] = {
@@ -37,15 +39,37 @@ object Plugin extends AutoPlugin {
   private def javaCppPresetDependencies: Def.Setting[Seq[ModuleID]] = {
     import autoImport._
     libraryDependencies ++= {
+      val cppPresetVersion = majorMinorOnly(javaCppVersion.value)
       javaCppPresetLibs.value.flatMap {
         case (libName, libVersion) =>
-          val generic = "org.bytedeco.javacpp-presets" % libName % s"$libVersion-${javaCppVersion.value}" classifier ""
+          val generic = "org.bytedeco.javacpp-presets" % libName % s"$libVersion-$cppPresetVersion" classifier ""
           val platformSpecific = javaCppPlatform.value.map { platform =>
-            "org.bytedeco.javacpp-presets" % libName % s"$libVersion-${javaCppVersion.value}" classifier platform
+            "org.bytedeco.javacpp-presets" % libName % s"$libVersion-$cppPresetVersion" classifier platform
           }
           generic +: platformSpecific
       }
     }
+  }
+
+  /**
+   * Before javacpp 1.4
+   * Given a version string, simply drops the patch level and returns the major-minor version only
+   *
+   * Starting from javacpp 1.4
+   * The version number of the presets are equal to the javacpp version.
+   *
+   * @param version eg. "1.4.2"
+   */
+  private def majorMinorOnly(version: String): String =
+    version match {
+      case VersionSplit(a :: b :: _) if b < 4 => s"$a.$b"
+      case VersionSplit(_) => version
+      case _ => throw new IllegalArgumentException("Version format not recognized")
+    }
+
+  private object VersionSplit {
+    def unapply(arg: String): Option[List[Int]] =
+      Try(arg.split('.').map(_.toInt).toList).toOption
   }
 
 }

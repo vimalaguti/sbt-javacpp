@@ -1,24 +1,23 @@
-lazy val root = (project in file("."))
-  .enablePlugins(SbtPlugin)
-  .settings(
-    name := "sbt-javacpp",
-    version := "1.14-SNAPSHOT",
-    organization := "org.bytedeco",
-    scriptedLaunchOpts := {
-      scriptedLaunchOpts.value ++
-        Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
-    },
-    scriptedBufferLog := false
-  )
+name := "sbt-javacpp"
 
-scalaVersion in Global := "2.12.7"
-sbtVersion in Global := "1.2.7"
+version := "1.14-SNAPSHOT"
+
+organization := "org.bytedeco"
 
 sbtPlugin := true
 
+publishMavenStyle := true
+
+scalaVersion in Global := "2.12.8"
+
+sbtVersion in Global := "1.2.7"
+
 crossSbtVersions := Vector("0.13.17", "1.2.7")
 
-publishMavenStyle := true
+scalaCompilerBridgeSource := {
+  val sv = appConfiguration.value.provider.id.version
+  ("org.scala-sbt" % "compiler-interface" % sv % "component").sources
+}
 
 publishArtifact in Test := false
 
@@ -54,9 +53,5 @@ pomExtra :=
         <id>lloydmeta</id>
         <name>Lloyd Chan</name>
         <url>https://beachape.com</url>
-      </developer>
-      <developer>
-        <id>vimalaguti</id>
-        <name>Vittorio Malaguti</name>
       </developer>
     </developers>
