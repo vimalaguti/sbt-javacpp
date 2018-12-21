@@ -62,7 +62,7 @@ object Plugin extends AutoPlugin {
    */
   private def majorMinorOnly(version: String): String =
     version match {
-      case VersionSplit(a :: b :: _) if b < 4 => s"$a.$b"
+      case VersionSplit(a :: b :: _) if a < 2 & b < 4 => s"$a.$b"
       case VersionSplit(_) => version
       case _ => throw new IllegalArgumentException("Version format not recognized")
     }
